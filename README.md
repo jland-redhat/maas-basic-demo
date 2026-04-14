@@ -8,6 +8,23 @@ OpenShift **Models as a Service (MaaS)** demo environment: sample subscriptions,
 - `oc` (or `kubectl`) with a cluster-admin context to apply samples
 - Three test users aligned with your demo (see below)
 
+## OpenShift CLI and console (RHOAI demos)
+
+**You do not need `oc` inside the Jupyter kernel.** RHOAI notebook images usually do not include the OpenShift CLI. Run **`oc`** from your **workstation** (or any host) where you are logged into the cluster, or use the **OpenShift web console** to copy a login token.
+
+**Useful commands** (after `oc login` or with a valid kubeconfig):
+
+```bash
+oc whoami                    # current OpenShift user
+oc whoami -t                 # bearer token (same idea as “Copy login command” in the console)
+oc whoami --show-console     # web console URL (OpenShift 4.10+)
+oc cluster-info              # Kubernetes API endpoint
+```
+
+**MaaS gateway URL (`MAAS_BASE`):** Use the public HTTPS origin for your MaaS gateway (the host you use for `/maas-api/...` in the browser). Your team may document it as a route; you can also inspect routes with `oc get route -A` if you know the namespace.
+
+**Notebooks:** Both validation notebooks include a **Demo quick swap** section at the top so you can paste `MAAS_BASE` and a token or API key **in one small cell** and re-run setup—without scrolling through the full configuration table.
+
 ## Deploy the samples
 
 From the repo root, apply the bundled MaaS system (free + premium stacks, LLM inference services, subscriptions, and optional `LLMInferenceServiceConfig` resources under `opendatahub`):
