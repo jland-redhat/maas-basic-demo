@@ -1,16 +1,16 @@
 # MaaS basic demo
 
-OpenShift **Models as a Service (MaaS)** demo environment: sample subscriptions, simulator models, and a validation notebook. Use it to show UI flows, rate limits (HTTP 429), and API checks.
+OpenShift **Models as a Service (MaaS)** demo: sample subscriptions, simulator models, and Jupyter notebooks for UI flows, rate limits (HTTP 429), and API checks.
 
 ## Prerequisites
 
-- OpenShift cluster with MaaS / related operators as required for your environment
+- OpenShift cluster with MaaS (and related operators) as required for your environment
 - `oc` (or `kubectl`) with a cluster-admin context to apply samples
-- Three test users aligned with your demo (see below)
+- Three test users aligned with your demo (see [Demo users](#demo-users-presenter-script))
 
 ## OpenShift CLI and console (RHOAI demos)
 
-**You do not need `oc` inside the Jupyter kernel.** RHOAI notebook images usually do not include the OpenShift CLI. Run **`oc`** from your **workstation** (or any host) where you are logged into the cluster, or use the **OpenShift web console** to copy a login token.
+**You do not need `oc` inside the Jupyter kernel.** RHOAI notebook images usually omit the OpenShift CLI. Run **`oc`** on your **workstation** (or any host) where you are logged into the cluster, or use the **OpenShift web console** to copy a login token.
 
 **Useful commands** (after `oc login` or with a valid kubeconfig):
 
@@ -21,21 +21,21 @@ oc whoami --show-console     # web console URL (OpenShift 4.10+)
 oc cluster-info              # Kubernetes API endpoint
 ```
 
-**MaaS gateway URL (`MAAS_BASE`):** Use the public HTTPS origin for your MaaS gateway (the host you use for `/maas-api/...` in the browser). Your team may document it as a route; you can also inspect routes with `oc get route -A` if you know the namespace.
+**MaaS gateway URL (`MAAS_BASE`):** Use the public HTTPS origin for your MaaS gateway (the host you use for `/maas-api/...` in the browser). Your team may document it as a route; you can also list routes with `oc get route -A` if you know the namespace.
 
-**Notebooks:** The validation notebooks include a **Demo quick swap** section at the top so you can paste `MAAS_BASE` and a token or API key **in one small cell** and re-run setup—without scrolling through the full configuration table. **`maas-external-model-demo.ipynb`** uses the same API-key pattern but defaults to two gateway routes (**GPT-4o** and **Claude**) as **`/v1/chat/completions`** targets (swap with `ACTIVE_EXTERNAL`; no catalog flow).
+**Notebooks:** The demo notebooks include a **Demo quick swap** section so you can paste `MAAS_BASE` and a token or API key in one cell and re-run setup. **`ExternalModelsDemo.ipynb`** uses the same API-key pattern and defaults to two gateway **`/v1/chat/completions`** routes (GPT-4o and Claude); switch with `ACTIVE_EXTERNAL` (no catalog flow).
 
 ## Deploy the samples
 
-From the repo root, apply the bundled MaaS system (free + premium stacks, LLM inference services, subscriptions, and optional `LLMInferenceServiceConfig` resources under `opendatahub`):
+From the repo root, apply the bundled MaaS system (free and premium stacks, LLM inference services, subscriptions, and optional `LLMInferenceServiceConfig` resources under `opendatahub`):
 
 ```bash
 oc apply -k samples/maas-system
 ```
 
-Review manifests under `samples/` first if you need to change namespaces or routes.
+Review manifests under `samples/` before changing namespaces or routes.
 
-To deploy only one tier, for example the free stack:
+Single tier (example — free stack):
 
 ```bash
 oc apply -k samples/maas-system/free
@@ -45,51 +45,55 @@ oc apply -k samples/maas-system/free
 
 Use **two browser contexts**: a normal window for end-user personas, and an **incognito (or separate) window** for cluster admin / OpenShift Console work.
 
-| Persona        | Role              | Use for |
-|----------------|-------------------|---------|
-| **Maria**      | Free user         | Default “basic” path: models, AI Assets, metrics, 429 |
-| **Aria**       | Premium user      | Contrasts with free tier where your cluster is set up for it |
-| **Bob**        | Enterprise / alt  | Optional second paid or enterprise storyline |
+| Persona   | Role             | Use for |
+|-----------|------------------|---------|
+| **Maria** | Free user        | Default path: models, AI Assets, metrics, HTTP 429 |
+| **Aria**  | Premium user     | Contrast with free tier where your cluster supports it |
+| **Bob**   | Enterprise / alt | Optional second paid or enterprise storyline |
 
-Authorization in the demo is via **OpenShift groups** and tokens (see the validation notebook for API calls).
+Authorization is via **OpenShift groups** and tokens (see the notebooks for API calls).
 
 ### Suggested flow
 
-1. **Setup (cluster admin)**  
-   In the admin context: OpenShift Console and **Open Data Hub** (or your AI/ML operator UIs as deployed). Confirm groups and any MaaS-related resources match the demo.
+1. **Cluster setup (admin)**  
+   Walk through **Groups** as needed: e.g. `maas-end-user` / `maas-end-user-admin` for visibility into the stack and model deployment; premium/enterprise users for subscription and auth policy demos.
 
-2. **Free user path — Maria**  
+2. **RHOAI dashboard**  
+   Show **Subscriptions** and **Auth policies** (or your product’s equivalents).
+
+3. **Free user — Maria**  
    - Sign in as Maria.  
-   - Open **Models** and show which models she can use.  
-   - In **AI Assets** (or your product’s subscription UI), show **subscription** details for the free tier.  
-   - Show **metrics** returned for usage.  
-   - Exercise traffic until you hit **HTTP 429** (rate limit), matching the configured token limits.
+   - Open **Models** and show available models.  
+   - In **AI Assets** (or your subscription UI), show **subscription** details for the free tier.  
+   - Show **usage metrics**.  
+   - Drive traffic until you hit **HTTP 429** (rate limit), consistent with configured token limits.
 
-3. **Notebook (optional but clearer for APIs)**  
-   Run **`maas-validation-demo.ipynb`** locally with Jupyter: configure `MAAS_BASE` and auth (`OPENSHIFT_TOKEN` or username/password via env), then walk through API key creation, model list, a single completion, and the 429 loop. If you already have an API key, use **`maas-validation-demo-with-key.ipynb`** instead (set `MAAS_BASE` and `MAAS_API_KEY` or `API_KEY`).
+4. **Notebook (optional; good for APIs)**  
+   Run **`BasicDemo.ipynb`** with Jupyter: set `MAAS_BASE` and auth (`OPENSHIFT_TOKEN` or username/password via env), then API key creation, model list, completion, and the 429 loop. If you already have an API key, use **`BasicDemo-no-key.ipynb`** (`MAAS_BASE` and `MAAS_API_KEY` or `API_KEY`).
 
-4. **Deploy a model (UI)**  
+5. **Deploy a model (UI)**  
    **Models → Deploy model**  
-   - **Model URI:** `hf://sshleifer/tiny-gpt2` — the simulator ignores the weights, but the URI must be a real, fetchable model for the pipeline.  
-   - **Which field matters:** `llm-d-inference-sim` uses the **`--model` argument** (see `LLMInferenceServiceConfig` / merged pod args). There is no separate env var the samples rely on. **`spec.model.name`** on the `LLMInferenceService` is what MaaS / the API surface uses — keep it aligned with `--model`. To use another Hugging Face id, override **`spec.template.containers[0].args`** (and **`spec.model.name`**) on that service, or use your UI if it patches those fields.
+   - **Model URI:** `hf://sshleifer/tiny-gpt2` — the simulator does not need the weights, but the URI must be a real, fetchable model for the pipeline.  
+   - **What matters:** `llm-d-inference-sim` uses the **`--model` argument** (see `LLMInferenceServiceConfig` / merged pod args). The samples do not rely on a separate env var for that. **`spec.model.name`** on the `LLMInferenceService` is what MaaS exposes — keep it aligned with `--model`. For another Hugging Face id, override **`spec.template.containers[0].args`** and **`spec.model.name`** on that service, or use your UI if it patches those fields.
 
-## Repository layout (short)
+## Repository layout
 
 | Path | Purpose |
 |------|---------|
-| `samples/maas-system/` | Kustomize bundles for free/premium MaaS + simulator models |
-| `maas-validation-demo.ipynb` | Full flow: OpenShift auth, create API key, models, completions, 429 |
-| `maas-validation-demo-with-key.ipynb` | Same inference steps; **bring your own** `MAAS_API_KEY` / `API_KEY` (no key creation) |
-| `maas-external-model-demo.ipynb` | Gateway **chat** routes (GPT-4o / Claude presets) |
-| `demo-files/` | Ad hoc exports / reference YAML (not applied automatically) |
+| `samples/maas-system/` | Kustomize bundles for free/premium MaaS and simulator models |
+| `BasicDemo.ipynb` | Full flow: OpenShift auth, API key, models, completions, 429 |
+| `BasicDemo-no-key.ipynb` | Same inference steps with your own `MAAS_API_KEY` / `API_KEY` (no key creation) |
+| `ExternalModelsDemo.ipynb` | Gateway chat routes (GPT-4o / Claude presets) |
+| `demo-files/` | Reference YAML (not applied automatically) |
+| `workaround/` | Optional RBAC samples (e.g. model ref access) |
 
-## Publishing the notebook as static HTML
+## Publishing notebooks as static HTML
 
-CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). The site includes **`index.html`** (full demo), **`maas-validation-demo-with-key.html`** (pre-provisioned key variant), and **`maas-external-model-demo.html`** (external chat routes). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
+CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). Outputs: **`index.html`** (`BasicDemo`), **`basic-demo-no-key.html`**, **`external-models-demo.html`**. See `.github/workflows/deploy-notebook.yml` and set **Pages → GitHub Actions** in the repository settings.
 
 ## Chat completion (curl)
 
-Example **`curl`** for OpenAI-style completions (body includes **`"stream": true`** as used by the notebooks). **`curl -N`** disables curl’s output buffering.
+Example **`curl`** for OpenAI-style completions (body includes **`"stream": true`** as in the notebooks). **`curl -N`** turns off curl’s output buffering.
 
 ```bash
 curl -N -sSk -H "Authorization: Bearer $API_KEY" \
@@ -105,4 +109,4 @@ stdbuf -oL curl -N -sSk -H "Authorization: Bearer $API_KEY" \
   "${MODEL_URL}/v1/completions"
 ```
 
-Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in `maas-validation-demo.ipynb` (or export them after running the notebook setup cells). **`maas-external-model-demo.ipynb`** prints matching **`curl`** lines after **Load presets**.
+Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in **`BasicDemo.ipynb`** (or export them after running the setup cells). **`ExternalModelsDemo.ipynb`** prints matching **`curl`** lines after **Load presets**.

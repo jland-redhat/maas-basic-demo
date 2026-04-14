@@ -38,15 +38,15 @@ jobs:
           python -m nbconvert --to html \
             --output-dir _site \
             --output index \
-            maas-validation-demo.ipynb
+            BasicDemo.ipynb
           python -m nbconvert --to html \
             --output-dir _site \
-            --output maas-validation-demo-with-key \
-            maas-validation-demo-with-key.ipynb
+            --output basic-demo-no-key \
+            BasicDemo-no-key.ipynb
           python -m nbconvert --to html \
             --output-dir _site \
-            --output maas-external-model-demo \
-            maas-external-model-demo.ipynb
+            --output external-models-demo \
+            ExternalModelsDemo.ipynb
 
       - uses: actions/upload-pages-artifact@v3
         with:
