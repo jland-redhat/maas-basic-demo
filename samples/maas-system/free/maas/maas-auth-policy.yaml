@@ -4,11 +4,11 @@ metadata:
   name: simulator-access
   namespace: models-as-a-service
   annotations:
-    openshift.io/display-name: "Simulator Access (Free)"
+    openshift.io/display-name: "Free Simulator Access"
     openshift.io/description: "Grants all authenticated users access to the free-tier simulator model"
 spec:
   modelRefs:
-    - name: facebook-opt-125m-simulated
+    - name: maas-demo-free-simulator
       namespace: llm
   subjects:
     groups:

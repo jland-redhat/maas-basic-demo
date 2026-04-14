@@ -4,7 +4,7 @@ metadata:
   name: simulator-subscription
   namespace: models-as-a-service
   annotations:
-    openshift.io/display-name: "Simulator Subscription (Free)"
+    openshift.io/display-name: "Free Simulator Access"
     openshift.io/description: "Free-tier subscription with 100 tokens/min rate limit"
 spec:
   owner:
@@ -12,7 +12,7 @@ spec:
       - name: system:authenticated
     users: []
   modelRefs:
-    - name: facebook-opt-125m-simulated
+    - name: maas-demo-free-simulator
       namespace: llm
       tokenRateLimits:
         - limit: 100

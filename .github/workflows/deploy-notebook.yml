@@ -1,4 +1,4 @@
-# Build maas-validation-demo.ipynb to static HTML and publish to GitHub Pages.
+# Build validation notebooks to static HTML and publish to GitHub Pages (no execution).
 #
 # After the first run: Repository → Settings → Pages → set "Source" to
 # "GitHub Actions" (not "Deploy from a branch").
@@ -32,13 +32,17 @@ jobs:
       - name: Install nbconvert
         run: pip install nbconvert
 
-      - name: Convert notebook to HTML
+      - name: Convert notebooks to HTML
         run: |
           mkdir -p _site
           python -m nbconvert --to html \
             --output-dir _site \
             --output index \
             maas-validation-demo.ipynb
+          python -m nbconvert --to html \
+            --output-dir _site \
+            --output maas-validation-demo-with-key \
+            maas-validation-demo-with-key.ipynb
 
       - uses: actions/upload-pages-artifact@v3
         with:

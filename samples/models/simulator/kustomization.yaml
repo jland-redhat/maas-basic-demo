@@ -2,11 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 metadata:
-  name: facebook-opt-125m-simulated
+  name: maas-demo-free-simulator
 
 namespace: llm
 
-namePrefix: facebook-opt-125m-
+namePrefix: maas-demo-free-
 
 resources:
-- model.yaml
+  - model.yaml

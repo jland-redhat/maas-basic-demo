@@ -47,12 +47,14 @@ To deploy both simulator models:
 The two simulator models can be distinguished by:
 
 - **Model Name**:
-  - Standard: `facebook-opt-125m-simulated` (from kustomization namePrefix)
-  - Premium: `premium-simulated-simulated-premium` (from kustomization namePrefix + model name)
+  - Free tier: `maas-demo-free-simulator` (`namePrefix: maas-demo-free-` + `metadata.name: simulator`)
+  - Premium tier: `maas-demo-premium-simulator` (`namePrefix: maas-demo-premium-` + `metadata.name: simulator`)
 
 - **LLMInferenceService Name**:
-  - Standard: `facebook-opt-125m-simulated`
-  - Premium: `premium-simulated-simulated-premium`
+  - Free tier: `maas-demo-free-simulator`
+  - Premium tier: `maas-demo-premium-simulator`
+
+Both use `spec.baseRefs` → `LLMInferenceServiceConfig` **`maas-demo-simulator-template`** in **`opendatahub`**.
 
 Subscription-based access is configured via MaaSAuthPolicy and MaaSSubscription (see [docs/samples/maas-system/](../maas-system/)), not via LLMInferenceService annotations.
 

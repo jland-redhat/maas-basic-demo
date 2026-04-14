@@ -44,8 +44,9 @@ spec:
           - name: VLLM_CPU_KVCACHE_SPACE
             value: "3"
           # Omit --trust-remote-code: vLLM warns it only applies to HF AutoModel paths; no effect for mounted/OCI weights.
+          # Lower max-model-len → less KV cache work per request → snappier demo (tune 1024–4096 as needed).
           - name: VLLM_ADDITIONAL_ARGS
-            value: "--max-model-len 4096"
+            value: "--max-model-len 2048"
         resources:
           requests:
             cpu: "3"

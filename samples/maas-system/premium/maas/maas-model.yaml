@@ -1,14 +1,13 @@
-# MaaSModelRef for the premium subscription simulator.
-# LLMIS from docs/samples/models/simulator-premium (name: premium-simulated-simulated-premium in namespace llm).
+# MaaSModelRef for the premium subscription simulator (LLMIS maas-demo-premium-simulator in llm).
 apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSModelRef
 metadata:
-  name: premium-simulated-simulated-premium
+  name: maas-demo-premium-simulator
   namespace: llm
   annotations:
-    openshift.io/display-name: "Premium Simulator"
-    openshift.io/description: "A simulated model for premium-tier testing"
+    openshift.io/display-name: "MaaS demo — premium simulator"
+    openshift.io/description: "Simulated model for premium-tier testing"
 spec:
   modelRef:
     kind: LLMInferenceService
-    name: premium-simulated-simulated-premium
+    name: maas-demo-premium-simulator

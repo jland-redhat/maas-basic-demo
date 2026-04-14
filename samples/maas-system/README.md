@@ -6,8 +6,8 @@ Bundled samples that deploy LLMInferenceService + MaaSModelRef + MaaSAuthPolicy 
 
 | Sample | Group | Model | Token Limit |
 |--------|-------|-------|-------------|
-| **free** | system:authenticated | facebook-opt-125m-simulated | 100/min |
-| **premium** | premium-user | premium-simulated-simulated-premium | 1000/min |
+| **free** | system:authenticated | maas-demo-free-simulator | 100/min |
+| **premium** | premium-user | maas-demo-premium-simulator | 1000/min |
 | **facebook-opt-125m-cpu** | system:authenticated | facebook-opt-125m-cpu-single-node-no-scheduler-cpu | 100/min |
 | **qwen3** | system:authenticated | qwen3-single-node-no-scheduler-nvidia-gpu | 100/min |
 | **granite-3-1-8b-rhelai-modelcar** | system:authenticated | granite-3-1-8b-rhelai-modelcar-single-node-cpu (LLMIS in `llm`) | 10000/min |

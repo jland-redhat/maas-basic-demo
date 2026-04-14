@@ -49,21 +49,35 @@ Authorization in the demo is via **OpenShift groups** and tokens (see the valida
    - Exercise traffic until you hit **HTTP 429** (rate limit), matching the configured token limits.
 
 3. **Notebook (optional but clearer for APIs)**  
-   Run **`maas-validation-demo.ipynb`** locally with Jupyter: configure `MAAS_BASE` and auth (`OPENSHIFT_TOKEN` or username/password via env), then walk through API key creation, model list, a single completion, and the 429 loop.
+   Run **`maas-validation-demo.ipynb`** locally with Jupyter: configure `MAAS_BASE` and auth (`OPENSHIFT_TOKEN` or username/password via env), then walk through API key creation, model list, a single completion, and the 429 loop. If you already have an API key, use **`maas-validation-demo-with-key.ipynb`** instead (set `MAAS_BASE` and `MAAS_API_KEY` or `API_KEY`).
 
 4. **Deploy a model (UI)**  
    **Models → Deploy model**  
    - **Model URI:** `hf://sshleifer/tiny-gpt2` — the simulator ignores the weights, but the URI must be a real, fetchable model for the pipeline.  
-   - **Environment variable:** `SIM_MODEL` — e.g. set to `enterprise-model` when you want that storyline (adjust to match your simulator / subscription naming).
+   - **Which field matters:** `llm-d-inference-sim` uses the **`--model` argument** (see `LLMInferenceServiceConfig` / merged pod args). There is no separate env var the samples rely on. **`spec.model.name`** on the `LLMInferenceService` is what MaaS / the API surface uses — keep it aligned with `--model`. To use another Hugging Face id, override **`spec.template.containers[0].args`** (and **`spec.model.name`**) on that service, or use your UI if it patches those fields.
 
 ## Repository layout (short)
 
 | Path | Purpose |
 |------|---------|
 | `samples/maas-system/` | Kustomize bundles for free/premium MaaS + simulator models |
-| `maas-validation-demo.ipynb` | End-user API validation (tokens, completions, 429) |
+| `maas-validation-demo.ipynb` | Full flow: OpenShift auth, create API key, models, completions, 429 |
+| `maas-validation-demo-with-key.ipynb` | Same inference steps; **bring your own** `MAAS_API_KEY` / `API_KEY` (no key creation) |
 | `demo-files/` | Ad hoc exports / reference YAML (not applied automatically) |
 
 ## Publishing the notebook as static HTML
 
-CI can render the notebook to **GitHub Pages** without executing cells (no cluster calls in the pipeline). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
+CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). The site includes **`index.html`** (full demo) and **`maas-validation-demo-with-key.html`** (pre-provisioned key variant). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
+
+## Streaming completion (curl)
+
+Use **`"stream": true`** in the JSON body and **`curl -N`** (no buffering) so tokens arrive as **SSE** chunks instead of one JSON blob at the end.
+
+```bash
+curl -N -sSk -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\": \"${MODEL_NAME}\", \"prompt\": \"Hello\", \"max_tokens\": 50, \"stream\": true}" \
+  "${MODEL_URL}/v1/completions"
+```
+
+Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in `maas-validation-demo.ipynb` (or export them after running the notebook setup cells).

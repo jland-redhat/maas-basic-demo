@@ -4,7 +4,7 @@ metadata:
   name: premium-simulator-subscription
   namespace: models-as-a-service
   annotations:
-    openshift.io/display-name: "Premium Simulator Subscription"
+    openshift.io/display-name: "Premium Simulator Access"
     openshift.io/description: "Premium-tier subscription with 1000 tokens/min rate limit"
 spec:
   owner:
@@ -12,7 +12,7 @@ spec:
       - name: premium-user
     users: []
   modelRefs:
-    - name: premium-simulated-simulated-premium
+    - name: maas-demo-premium-simulator
       namespace: llm
       tokenRateLimits:
         - limit: 1000

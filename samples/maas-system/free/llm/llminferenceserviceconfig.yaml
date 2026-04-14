@@ -1,9 +1,13 @@
-# LLMInferenceServiceConfig for llm-d-inference-sim (simulator). Installed with the free MaaS + simulator stack.
+# Shared template for llm-d-inference-sim (MaaS demo). Referenced by free/premium simulator LLMInferenceServices via spec.baseRefs.
 # Namespace matches typical RHOAI / Open Data Hub KServe config placement.
+#
+# Model id for the simulator process: the binary reads `--model` (see args below), not an env var.
+# To change it per deployment, override `spec.template.containers[0].args` on the LLMInferenceService
+# and keep `spec.model.name` consistent with what you advertise to MaaS.
 apiVersion: serving.kserve.io/v1alpha1
 kind: LLMInferenceServiceConfig
 metadata:
-  name: simulator-kserve-config-llm-decode-template
+  name: maas-demo-simulator-template
   namespace: opendatahub
   labels:
     app.kubernetes.io/part-of: kserve
@@ -12,8 +16,8 @@ metadata:
     platform.opendatahub.io/part-of: kserve
   annotations:
     serving.kserve.io/well-known-config: "true"
-    openshift.io/description: Simulator LLMInferenceServiceConfig.
-    openshift.io/display-name: LLMInferenceServiceConfig used for simulations of llm-d-inference-sim.
+    openshift.io/description: MaaS demo — llm-d-inference-sim workload template.
+    openshift.io/display-name: MaaS demo simulator (llm-d-inference-sim)
     opendatahub.io/recommended-accelerators: '["ibm.com/spyre_vf"]'
 spec:
   model:
@@ -71,12 +75,12 @@ spec:
             name: tls-certs
             readOnly: true
         terminationMessagePolicy: FallbackToLogsOnError
-        image: ghcr.io/llm-d/llm-d-inference-sim:v0.7.1
+        image: quay.io/maas/llm-d-inference-sim:latest
         args:
           - "--port"
           - "8000"
           - "--model"
-          - "${SIM_MODEL:-facebook/opt-125m}"
+          - "facebook/opt-125m"
           - "--mode"
           - random
           - "--ssl-certfile"

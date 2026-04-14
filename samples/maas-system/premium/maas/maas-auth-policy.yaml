@@ -8,7 +8,7 @@ metadata:
     openshift.io/description: "Grants premium-user group access to the premium simulator model"
 spec:
   modelRefs:
-    - name: premium-simulated-simulated-premium
+    - name: maas-demo-premium-simulator
       namespace: llm
   subjects:
     groups:
