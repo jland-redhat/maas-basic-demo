@@ -23,7 +23,7 @@ oc cluster-info              # Kubernetes API endpoint
 
 **MaaS gateway URL (`MAAS_BASE`):** Use the public HTTPS origin for your MaaS gateway (the host you use for `/maas-api/...` in the browser). Your team may document it as a route; you can also inspect routes with `oc get route -A` if you know the namespace.
 
-**Notebooks:** The validation notebooks include a **Demo quick swap** section at the top so you can paste `MAAS_BASE` and a token or API key **in one small cell** and re-run setup—without scrolling through the full configuration table. **`maas-external-model-demo.ipynb`** uses the same API-key pattern but defaults to two gateway routes (**GPT-4o** and **Claude**) as **`/v1/chat/completions`** targets with **SSE streaming** (swap with `ACTIVE_EXTERNAL`; no catalog flow).
+**Notebooks:** The validation notebooks include a **Demo quick swap** section at the top so you can paste `MAAS_BASE` and a token or API key **in one small cell** and re-run setup—without scrolling through the full configuration table. **`maas-external-model-demo.ipynb`** uses the same API-key pattern but defaults to two gateway routes (**GPT-4o** and **Claude**) as **`/v1/chat/completions`** targets (swap with `ACTIVE_EXTERNAL`; no catalog flow).
 
 ## Deploy the samples
 
@@ -80,16 +80,16 @@ Authorization in the demo is via **OpenShift groups** and tokens (see the valida
 | `samples/maas-system/` | Kustomize bundles for free/premium MaaS + simulator models |
 | `maas-validation-demo.ipynb` | Full flow: OpenShift auth, create API key, models, completions, 429 |
 | `maas-validation-demo-with-key.ipynb` | Same inference steps; **bring your own** `MAAS_API_KEY` / `API_KEY` (no key creation) |
-| `maas-external-model-demo.ipynb` | Gateway **chat** routes (GPT-4o / Claude presets), **SSE streaming** |
+| `maas-external-model-demo.ipynb` | Gateway **chat** routes (GPT-4o / Claude presets) |
 | `demo-files/` | Ad hoc exports / reference YAML (not applied automatically) |
 
 ## Publishing the notebook as static HTML
 
-CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). The site includes **`index.html`** (full demo), **`maas-validation-demo-with-key.html`** (pre-provisioned key variant), and **`maas-external-model-demo.html`** (external streaming). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
+CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). The site includes **`index.html`** (full demo), **`maas-validation-demo-with-key.html`** (pre-provisioned key variant), and **`maas-external-model-demo.html`** (external chat routes). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
 
-## Streaming completion (curl)
+## Chat completion (curl)
 
-Use **`"stream": true`** in the JSON body and **`curl -N`** (no buffering) so tokens arrive as **SSE** chunks instead of one JSON blob at the end.
+Example **`curl`** for OpenAI-style completions (body includes **`"stream": true`** as used by the notebooks). **`curl -N`** disables curl’s output buffering.
 
 ```bash
 curl -N -sSk -H "Authorization: Bearer $API_KEY" \
@@ -98,4 +98,11 @@ curl -N -sSk -H "Authorization: Bearer $API_KEY" \
   "${MODEL_URL}/v1/completions"
 ```
 
-Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in `maas-validation-demo.ipynb` (or export them after running the notebook setup cells).
+```bash
+stdbuf -oL curl -N -sSk -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\": \"${MODEL_NAME}\", \"prompt\": \"Hello\", \"max_tokens\": 50, \"stream\": true}" \
+  "${MODEL_URL}/v1/completions"
+```
+
+Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in `maas-validation-demo.ipynb` (or export them after running the notebook setup cells). **`maas-external-model-demo.ipynb`** prints matching **`curl`** lines after **Load presets**.
