@@ -1,0 +1,10 @@
+# Apply: oc apply -k workaround
+# Namespaced Role + Group RoleBinding for MaaS UI deploy (MaaSModelRef) RBAC issues.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: llm
+
+resources:
+  - role-maas-modelref.yaml
+  - rolebinding-maas-modelref.yaml

@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: maas-modelref-editor-model-end-users-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: maas-modelref-editor
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: model-end-users-admin

@@ -1,0 +1,223 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceServiceConfig
+metadata:
+ annotations:
+   platform.opendatahub.io/instance.name: default-kserve
+   openshift.io/description: Simulator LLMInferenceServiceConfig.
+   openshift.io/display-name: LLMInferenceServiceConfig used for simulations of llm-d-inference-sim.
+   serving.kserve.io/well-known-config: 'true'
+   internal.config.kubernetes.io/previousNamespaces: opendatahub
+   internal.config.kubernetes.io/previousKinds: LLMInferenceServiceConfig
+   platform.opendatahub.io/instance.generation: '1'
+   internal.config.kubernetes.io/previousNames: kserve-config-llm-template-ibm-spyre-s390x
+   opendatahub.io/recommended-accelerators: '["ibm.com/spyre_vf"]'
+   platform.opendatahub.io/type: Open Data Hub
+   platform.opendatauhb.io/version: 0.0.69
+ resourceVersion: '31615744'
+ name: simulator-kserve-config-llm-decode-template
+ uid: 65b397c2-26db-47f3-94ee-4c7704f4f55b
+ creationTimestamp: '2026-04-13T15:42:46Z'
+ generation: 3
+ managedFields:
+   - apiVersion: serving.kserve.io/v1alpha1
+     fieldsType: FieldsV1
+     fieldsV1:
+       'f:metadata':
+         'f:annotations':
+           'f:internal.config.kubernetes.io/previousNames': {}
+           'f:opendatahub.io/recommended-accelerators': {}
+           'f:platform.opendatauhb.io/version': {}
+           .: {}
+           'f:platform.opendatahub.io/instance.name': {}
+           'f:platform.opendatahub.io/type': {}
+           'f:openshift.io/display-name': {}
+           'f:serving.kserve.io/well-known-config': {}
+           'f:internal.config.kubernetes.io/previousKinds': {}
+           'f:platform.opendatahub.io/instance.generation': {}
+           'f:openshift.io/description': {}
+           'f:internal.config.kubernetes.io/previousNamespaces': {}
+         'f:labels':
+           .: {}
+           'f:app.kubernetes.io/part-of': {}
+           'f:app.opendatahub.io/kserve': {}
+           'f:opendatahub.io/config-type': {}
+           'f:platform.opendatahub.io/part-of': {}
+       'f:spec':
+         .: {}
+         'f:model':
+           .: {}
+           'f:uri': {}
+         'f:template':
+           .: {}
+           'f:containers':
+             .: {}
+             'k:{"name":"main"}':
+               'f:image': {}
+               'f:volumeMounts':
+                 .: {}
+                 'k:{"mountPath":"/var/run/kserve/tls"}':
+                   .: {}
+                   'f:mountPath': {}
+                   'f:name': {}
+                   'f:readOnly': {}
+               'f:terminationMessagePolicy': {}
+               .: {}
+               'f:resources':
+                 .: {}
+                 'f:limits':
+                   .: {}
+                   'f:cpu': {}
+                   'f:memory': {}
+                 'f:requests':
+                   .: {}
+                   'f:cpu': {}
+                   'f:memory': {}
+               'f:args': {}
+               'f:command': {}
+               'f:livenessProbe':
+                 .: {}
+                 'f:httpGet':
+                   .: {}
+                   'f:path': {}
+                   'f:port': {}
+                   'f:scheme': {}
+               'f:env':
+                 .: {}
+                 'k:{"name":"CUSTOM_MODEL_NAME"}':
+                   .: {}
+                   'f:name': {}
+                   'f:value': {}
+                 'k:{"name":"POD_NAME"}':
+                   .: {}
+                   'f:name': {}
+                   'f:valueFrom':
+                     .: {}
+                     'f:fieldRef': {}
+                 'k:{"name":"POD_NAMESPACE"}':
+                   .: {}
+                   'f:name': {}
+                   'f:valueFrom':
+                     .: {}
+                     'f:fieldRef': {}
+               'f:readinessProbe':
+                 .: {}
+                 'f:httpGet':
+                   .: {}
+                   'f:path': {}
+                   'f:port': {}
+                   'f:scheme': {}
+               'f:securityContext':
+                 .: {}
+                 'f:allowPrivilegeEscalation': {}
+                 'f:capabilities':
+                   .: {}
+                   'f:drop': {}
+                 'f:readOnlyRootFilesystem': {}
+                 'f:runAsNonRoot': {}
+                 'f:seccompProfile':
+                   .: {}
+                   'f:type': {}
+               'f:terminationMessagePath': {}
+               'f:imagePullPolicy': {}
+               'f:ports':
+                 .: {}
+                 'k:{"containerPort":8000,"protocol":"TCP"}':
+                   .: {}
+                   'f:containerPort': {}
+                   'f:name': {}
+                   'f:protocol': {}
+               'f:name': {}
+           'f:terminationGracePeriodSeconds': {}
+           'f:volumes':
+             .: {}
+             'k:{"name":"tls-certs"}':
+               .: {}
+               'f:name': {}
+               'f:secret':
+                 .: {}
+                 'f:secretName': {}
+     manager: Mozilla
+     operation: Update
+     time: '2026-04-13T18:10:44Z'
+ namespace: opendatahub
+ labels:
+   app.kubernetes.io/part-of: kserve
+   app.opendatahub.io/kserve: 'true'
+   opendatahub.io/config-type: accelerator
+   platform.opendatahub.io/part-of: kserve
+spec:
+ model:
+   uri: ''
+ template:
+   containers:
+     - resources:
+         limits:
+           cpu: 500m
+           memory: 512Mi
+         requests:
+           cpu: 100m
+           memory: 256Mi
+       readinessProbe:
+         httpGet:
+           path: /ready
+           port: 8000
+           scheme: HTTPS
+       terminationMessagePath: /dev/termination-log
+       name: main
+       command:
+         - /app/llm-d-inference-sim
+       livenessProbe:
+         httpGet:
+           path: /health
+           port: 8000
+           scheme: HTTPS
+       env:
+         - name: POD_NAME
+           valueFrom:
+             fieldRef:
+               apiVersion: v1
+               fieldPath: metadata.name
+         - name: POD_NAMESPACE
+           valueFrom:
+             fieldRef:
+               apiVersion: v1
+               fieldPath: metadata.namespace
+       securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+             - ALL
+         readOnlyRootFilesystem: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
+       ports:
+         - containerPort: 8000
+           name: https
+           protocol: TCP
+       imagePullPolicy: Always
+       volumeMounts:
+         - mountPath: /var/run/kserve/tls
+           name: tls-certs
+           readOnly: true
+       terminationMessagePolicy: FallbackToLogsOnError
+       image: 'ghcr.io/llm-d/llm-d-inference-sim:v0.7.1'
+       args:
+         - '--port'
+         - '8000'
+         - '--model'
+         - "${SIM_MODEL:-facebook/opt-125m}"
+         - '--mode'
+         - random
+         - '--ssl-certfile'
+         - /var/run/kserve/tls/tls.crt
+         - '--ssl-keyfile'
+         - /var/run/kserve/tls/tls.key
+   terminationGracePeriodSeconds: 30
+   volumes:
+     - name: tls-certs
+       secret:
+         secretName: '{{ ChildName .ObjectMeta.Name `-kserve-self-signed-certs` }}'
+
+
+
