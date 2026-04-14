@@ -93,20 +93,13 @@ CI can render the notebooks to **GitHub Pages** without executing cells (no clus
 
 ## Chat completion (curl)
 
-Example **`curl`** for OpenAI-style completions (body includes **`"stream": true`** as in the notebooks). **`curl -N`** turns off curl’s output buffering.
+Non-streaming **`curl`** for OpenAI-style **`/v1/completions`** (same shape as **`BasicDemo.ipynb`**).
 
 ```bash
-curl -N -sSk -H "Authorization: Bearer $API_KEY" \
+curl -sSk -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
-  -d "{\"model\": \"${MODEL_NAME}\", \"prompt\": \"Hello\", \"max_tokens\": 50, \"stream\": true}" \
+  -d "{\"model\": \"${MODEL_NAME}\", \"prompt\": \"Hello\", \"max_tokens\": 50}" \
   "${MODEL_URL}/v1/completions"
 ```
 
-```bash
-stdbuf -oL curl -N -sSk -H "Authorization: Bearer $API_KEY" \
-  -H "Content-Type: application/json" \
-  -d "{\"model\": \"${MODEL_NAME}\", \"prompt\": \"Hello\", \"max_tokens\": 50, \"stream\": true}" \
-  "${MODEL_URL}/v1/completions"
-```
-
-Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in **`BasicDemo.ipynb`** (or export them after running the setup cells). **`ExternalModelsDemo.ipynb`** prints matching **`curl`** lines after **Load presets**.
+Set `MODEL_NAME`, `MODEL_URL`, and `API_KEY` the same way as in **`BasicDemo.ipynb`** (or export them after running the setup cells). **`ExternalModelsDemo.ipynb`** calls **`/v1/chat/completions`** from Python (no streaming).
