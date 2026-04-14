@@ -23,7 +23,7 @@ oc cluster-info              # Kubernetes API endpoint
 
 **MaaS gateway URL (`MAAS_BASE`):** Use the public HTTPS origin for your MaaS gateway (the host you use for `/maas-api/...` in the browser). Your team may document it as a route; you can also inspect routes with `oc get route -A` if you know the namespace.
 
-**Notebooks:** Both validation notebooks include a **Demo quick swap** section at the top so you can paste `MAAS_BASE` and a token or API key **in one small cell** and re-run setup—without scrolling through the full configuration table.
+**Notebooks:** The validation notebooks include a **Demo quick swap** section at the top so you can paste `MAAS_BASE` and a token or API key **in one small cell** and re-run setup—without scrolling through the full configuration table. **`maas-external-model-demo.ipynb`** uses the same API-key pattern but hardcodes the external completions URL and model id for a **streaming** connectivity demo (no catalog flow).
 
 ## Deploy the samples
 
@@ -80,11 +80,12 @@ Authorization in the demo is via **OpenShift groups** and tokens (see the valida
 | `samples/maas-system/` | Kustomize bundles for free/premium MaaS + simulator models |
 | `maas-validation-demo.ipynb` | Full flow: OpenShift auth, create API key, models, completions, 429 |
 | `maas-validation-demo-with-key.ipynb` | Same inference steps; **bring your own** `MAAS_API_KEY` / `API_KEY` (no key creation) |
+| `maas-external-model-demo.ipynb` | External OpenAI-compatible endpoint: hardcoded URL + model id, **SSE streaming** completion |
 | `demo-files/` | Ad hoc exports / reference YAML (not applied automatically) |
 
 ## Publishing the notebook as static HTML
 
-CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). The site includes **`index.html`** (full demo) and **`maas-validation-demo-with-key.html`** (pre-provisioned key variant). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
+CI can render the notebooks to **GitHub Pages** without executing cells (no cluster calls in the pipeline). The site includes **`index.html`** (full demo), **`maas-validation-demo-with-key.html`** (pre-provisioned key variant), and **`maas-external-model-demo.html`** (external streaming). See `.github/workflows/deploy-notebook.yml` and enable **Pages → GitHub Actions** in the repository settings.
 
 ## Streaming completion (curl)
 
